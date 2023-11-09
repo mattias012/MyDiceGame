@@ -42,17 +42,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun handleButtonClick(sides: Int) {
-
-        //Create Dice
-        val die = Die(sides)
-
-        //Roll Dice
-        die.roll()
+    private fun handleButtonClick(guessedNumber: Int) {
 
         //Send to next view, send dice value with
         val intent = Intent(this, ResultViewActivity::class.java)
-        intent.putExtra("dicevalue", die.getCurrentValue()) // send data from dice after roll
+        intent.putExtra("guessedDiceValue", guessedNumber) // send data from dice after roll
 
         //intent.putExtra("numberOfDices", die.getCurrentValue()) // send data from dice after roll
 

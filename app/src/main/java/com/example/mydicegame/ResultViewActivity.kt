@@ -4,8 +4,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
+import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.gif.GifDrawable
 
@@ -27,10 +30,18 @@ class ResultViewActivity : AppCompatActivity() {
             // Kod som ska köras efter fördröjningen
             imageView.setImageResource(android.R.color.transparent)
 
+            //Create our Dice
+            val die = Die(6)
 
-        var receivedValue = intent.getIntExtra("dicevalue", 1)
+            //Roll Dice
+            die.roll()
 
-        when (receivedValue) {
+            var valueOnDiceAfterRoll = die.getCurrentValue()
+
+        var receivedValue = intent.getIntExtra("guessedDiceValue", 1)
+
+
+        when (valueOnDiceAfterRoll) {
             1 -> imageView.setBackgroundResource(R.drawable.dice1)
             2 -> imageView.setBackgroundResource(R.drawable.dice2)
             3 -> imageView.setBackgroundResource(R.drawable.dice3)
@@ -40,7 +51,21 @@ class ResultViewActivity : AppCompatActivity() {
             // Lägg till fler fall för andra tärningsvärden om så behövs
             else -> imageView.setBackgroundResource(R.drawable.shrug)
         }
+            var guessIsCorrectTextView = findViewById<TextView>(R.id.guessIsCorrectTextView)
 
+            if (receivedValue == valueOnDiceAfterRoll){
+
+
+                guessIsCorrectTextView.text = "Yeay! You guessed correct score"
+                guessIsCorrectTextView.isVisible = true
+
+                Log.d("!!!", "Yes correct guess")
+            }
+            else {
+                guessIsCorrectTextView.text = "Doh! Too bad, wrong guess, no points this time."
+            }
+
+        //Go back/try again
         buttonBack.setOnClickListener {
             finish() // close current view
 
