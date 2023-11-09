@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 
+
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +53,8 @@ class MainActivity : AppCompatActivity() {
         //Send to next view, send dice value with
         val intent = Intent(this, ResultViewActivity::class.java)
         intent.putExtra("dicevalue", die.getCurrentValue()) // send data from dice after roll
+
+        //intent.putExtra("numberOfDices", die.getCurrentValue()) // send data from dice after roll
 
         // Start next view
         startActivity(intent)

@@ -2,8 +2,12 @@ package com.example.mydicegame
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.widget.Button
 import android.widget.ImageView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.gif.GifDrawable
 
 class ResultViewActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -12,6 +16,17 @@ class ResultViewActivity : AppCompatActivity() {
 
         var imageView = findViewById<ImageView>(R.id.imageView)
         val buttonBack = findViewById<Button>(R.id.buttonGoBack)
+
+        // Exempel: Ladda en bild från res/drawable och visa den i en ImageView
+        val imageResource = R.drawable.dice
+        Glide.with(this)
+            .load(imageResource)
+            .into(imageView)
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            // Kod som ska köras efter fördröjningen
+            imageView.setImageResource(android.R.color.transparent)
+
 
         var receivedValue = intent.getIntExtra("dicevalue", 1)
 
@@ -28,6 +43,9 @@ class ResultViewActivity : AppCompatActivity() {
 
         buttonBack.setOnClickListener {
             finish() // close current view
+
         }
+
+        }, 3000)
     }
 }
