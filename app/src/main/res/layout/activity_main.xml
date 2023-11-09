@@ -70,6 +70,7 @@
         android:layout_height="42dp"
         android:layout_marginTop="32dp"
         android:text="Let's roll the dice! Guess on a number"
+        android:textAlignment="center"
         android:textSize="20dp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
