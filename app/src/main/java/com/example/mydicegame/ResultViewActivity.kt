@@ -13,12 +13,28 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.gif.GifDrawable
 
 class ResultViewActivity : AppCompatActivity() {
+
+    var player: Player? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_result_view)
 
         var imageView = findViewById<ImageView>(R.id.imageView)
         val buttonBack = findViewById<Button>(R.id.buttonGoBack)
+
+
+        val listOfPlayers: ArrayList<Player>? = intent.getSerializableExtra("listOfPlayers") as? ArrayList<Player>
+
+        // Kontrollera om listan är null och gör något med den om den inte är det
+        if (listOfPlayers != null) {
+            //Get Player
+            var foundPlayer = listOfPlayers.find { it.getPlayerName() == "Donatello" }
+
+            // Använd foundPlayer i stället för att ändra den globala variabeln
+            if (foundPlayer != null) {
+                player = foundPlayer
+            }
+        }
 
         // Exempel: Ladda en bild från res/drawable och visa den i en ImageView
         val imageResource = R.drawable.dice
@@ -38,39 +54,43 @@ class ResultViewActivity : AppCompatActivity() {
 
             var valueOnDiceAfterRoll = die.getCurrentValue()
 
-        var receivedValue = intent.getIntExtra("guessedDiceValue", 1)
+            var receivedValue = intent.getIntExtra("guessedDiceValue", 1)
 
 
-        when (valueOnDiceAfterRoll) {
-            1 -> imageView.setBackgroundResource(R.drawable.dice1)
-            2 -> imageView.setBackgroundResource(R.drawable.dice2)
-            3 -> imageView.setBackgroundResource(R.drawable.dice3)
-            4 -> imageView.setBackgroundResource(R.drawable.dice4)
-            5 -> imageView.setBackgroundResource(R.drawable.dice5)
-            6 -> imageView.setBackgroundResource(R.drawable.dice6)
-            // Lägg till fler fall för andra tärningsvärden om så behövs
-            else -> imageView.setBackgroundResource(R.drawable.shrug)
-        }
+            when (valueOnDiceAfterRoll) {
+                1 -> imageView.setBackgroundResource(R.drawable.dice1)
+                2 -> imageView.setBackgroundResource(R.drawable.dice2)
+                3 -> imageView.setBackgroundResource(R.drawable.dice3)
+                4 -> imageView.setBackgroundResource(R.drawable.dice4)
+                5 -> imageView.setBackgroundResource(R.drawable.dice5)
+                6 -> imageView.setBackgroundResource(R.drawable.dice6)
+                // Lägg till fler fall för andra tärningsvärden om så behövs
+                else -> imageView.setBackgroundResource(R.drawable.shrug)
+            }
+            val localPlayer = player
             var guessIsCorrectTextView = findViewById<TextView>(R.id.guessIsCorrectTextView)
 
-            if (receivedValue == valueOnDiceAfterRoll){
-
+            if (receivedValue == valueOnDiceAfterRoll) {
 
                 guessIsCorrectTextView.text = "Yeay! You guessed correct score"
                 guessIsCorrectTextView.isVisible = true
 
                 Log.d("!!!", "Yes correct guess")
+
+            } else {
+                //player.setTries()
+                if (localPlayer != null) {
+                    Log.d("!!!", "something happen here")
+                    guessIsCorrectTextView.text = "${localPlayer.getPlayerName()}Doh! Too bad, wrong guess, no points this time."
+                }
             }
-            else {
-                guessIsCorrectTextView.text = "Doh! Too bad, wrong guess, no points this time."
+
+            //Go back/try again
+            buttonBack.setOnClickListener {
+                finish() // close current view
+
             }
 
-        //Go back/try again
-        buttonBack.setOnClickListener {
-            finish() // close current view
-
-        }
-
-        }, 3000)
+        }, 2000)
     }
 }

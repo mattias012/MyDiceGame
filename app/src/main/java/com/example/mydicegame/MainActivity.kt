@@ -11,6 +11,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        //Create player on launch
+        val player = Player("Donatello", 0, 0)
+
+        //List of consecutive guesses
+        val listOfPlayers = ArrayList<Player>()
+
+        listOfPlayers.add(player)
+
 
         //Depending on choice
         val buttonOne = findViewById<Button>(R.id.buttonOne)
@@ -20,36 +28,42 @@ class MainActivity : AppCompatActivity() {
         val buttonFive = findViewById<Button>(R.id.buttonFive)
         val buttonSix = findViewById<Button>(R.id.buttonSix)
 
-
-
         buttonOne.setOnClickListener {
-            handleButtonClick(1)
+            handleButtonClick(1, player.getTries(), listOfPlayers)
         }
         buttonTwo.setOnClickListener {
-            handleButtonClick(2)
+            handleButtonClick(2, player.getTries(), listOfPlayers)
         }
         buttonThree.setOnClickListener {
-            handleButtonClick(3)
+            handleButtonClick(3, player.getTries(), listOfPlayers)
         }
         buttonFour.setOnClickListener{
-            handleButtonClick(4)
+            handleButtonClick(4, player.getTries(), listOfPlayers)
         }
         buttonFive.setOnClickListener{
-            handleButtonClick(5)
+            handleButtonClick(5, player.getTries(), listOfPlayers)
         }
         buttonSix.setOnClickListener{
-            handleButtonClick(6)
+            handleButtonClick(6, player.getTries(), listOfPlayers)
         }
     }
 
-    private fun handleButtonClick(guessedNumber: Int) {
+    private fun handleButtonClick(guessedNumber: Int, tries: Int, listOfPlayers: ArrayList<Player>) {
 
         //Send to next view, send dice value with
         val intent = Intent(this, ResultViewActivity::class.java)
         intent.putExtra("guessedDiceValue", guessedNumber) // send data from dice after roll
+        intent.putExtra("listOfPlayers", listOfPlayers) // Also send with list of players
 
-        //intent.putExtra("numberOfDices", die.getCurrentValue()) // send data from dice after roll
-
+        //Also send number of tries
+        if (tries >= 3) {
+        }
+        else {
+            intent.putExtra(
+                "tries",
+                tries
+            ) // send data from dice after roll
+        }
         // Start next view
         startActivity(intent)
     }
