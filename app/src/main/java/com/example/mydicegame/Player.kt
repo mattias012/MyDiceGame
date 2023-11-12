@@ -1,14 +1,14 @@
 package com.example.mydicegame
 import java.io.Serializable
 
-class Player(private val playerName: String, private var score: Int = 0, private var tries: Int = 0) : Serializable {
+class Player(private val playerName: String, private var score: Int = 0, private var tries: Int = 3) : Serializable {
 
 
     fun getTries(): Int {
         return this.tries
     }
     fun setTries(){
-        this.tries = this.tries + 1
+        this.tries = this.tries - 1
     }
     fun setScore(){
         this.score = this.score + 1

@@ -1,5 +1,7 @@
 package com.example.mydicegame
 
+import android.app.Activity
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -70,6 +72,15 @@ class ResultViewActivity : AppCompatActivity() {
             val localPlayer = player
             var guessIsCorrectTextView = findViewById<TextView>(R.id.guessIsCorrectTextView)
 
+            val updatedList = ArrayList<Player>()
+
+            if (localPlayer != null) {
+                localPlayer.setTries()
+
+
+                updatedList.add(localPlayer)
+            }
+
             if (receivedValue == valueOnDiceAfterRoll) {
 
                 guessIsCorrectTextView.text = "Yeay! You guessed correct score"
@@ -80,14 +91,18 @@ class ResultViewActivity : AppCompatActivity() {
             } else {
                 //player.setTries()
                 if (localPlayer != null) {
-                    Log.d("!!!", "something happen here")
-                    guessIsCorrectTextView.text = "${localPlayer.getPlayerName()}Doh! Too bad, wrong guess, no points this time."
+
+                    guessIsCorrectTextView.text = "${localPlayer.getPlayerName()}, Too bad, wrong guess, no points this time. ${localPlayer.getTries()} tries left."
                 }
             }
 
             //Go back/try again
             buttonBack.setOnClickListener {
-                finish() // close current view
+                val data = Intent()
+                data.putExtra("myListKey", ArrayList(updatedList))
+                setResult(Activity.RESULT_OK, data)
+                finish()
+
 
             }
 
