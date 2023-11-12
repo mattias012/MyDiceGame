@@ -1,5 +1,6 @@
 package com.example.mydicegame
 
+import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -7,17 +8,19 @@ import android.widget.Button
 
 
 class MainActivity : AppCompatActivity() {
+
+    //Create player on launch
+    var player = Player("Donatello", 0, 3)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        //Create player on launch
-        val player = Player("Donatello", 0, 0)
+
 
         //List of consecutive guesses
-        val listOfPlayers = ArrayList<Player>()
+       // val listOfPlayers = ArrayList<Player>()
 
-        listOfPlayers.add(player)
+        //listOfPlayers.add(player)
 
 
         //Depending on choice
@@ -29,34 +32,43 @@ class MainActivity : AppCompatActivity() {
         val buttonSix = findViewById<Button>(R.id.buttonSix)
 
         buttonOne.setOnClickListener {
-            handleButtonClick(1, player.getTries(), listOfPlayers)
+            handleButtonClick(1, player.getTries(), player)
         }
         buttonTwo.setOnClickListener {
-            handleButtonClick(2, player.getTries(), listOfPlayers)
+            handleButtonClick(2, player.getTries(), player)
         }
         buttonThree.setOnClickListener {
-            handleButtonClick(3, player.getTries(), listOfPlayers)
+            handleButtonClick(3, player.getTries(), player)
         }
         buttonFour.setOnClickListener{
-            handleButtonClick(4, player.getTries(), listOfPlayers)
+            handleButtonClick(4, player.getTries(), player)
         }
         buttonFive.setOnClickListener{
-            handleButtonClick(5, player.getTries(), listOfPlayers)
+            handleButtonClick(5, player.getTries(), player)
         }
         buttonSix.setOnClickListener{
-            handleButtonClick(6, player.getTries(), listOfPlayers)
+            handleButtonClick(6, player.getTries(), player)
         }
     }
 
-    private fun handleButtonClick(guessedNumber: Int, tries: Int, listOfPlayers: ArrayList<Player>) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
+            player = data?.getSerializableExtra("player") as Player
+        }
+    }
+
+    private fun handleButtonClick(guessedNumber: Int, tries: Int, player: Player) {
+
 
         //Send to next view, send dice value with
         val intent = Intent(this, ResultViewActivity::class.java)
         intent.putExtra("guessedDiceValue", guessedNumber) // send data from dice after roll
-        intent.putExtra("listOfPlayers", listOfPlayers) // Also send with list of players
+        intent.putExtra("player", player) // Also send with list of players
+
 
         //Also send number of tries
-        if (tries >= 3) {
+        if (tries == 0) {
         }
         else {
             intent.putExtra(
@@ -65,6 +77,6 @@ class MainActivity : AppCompatActivity() {
             ) // send data from dice after roll
         }
         // Start next view
-        startActivity(intent)
+        startActivityForResult(intent, 1)
     }
 }
