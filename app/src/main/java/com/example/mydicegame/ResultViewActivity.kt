@@ -17,6 +17,7 @@ import com.bumptech.glide.load.resource.gif.GifDrawable
 class ResultViewActivity : AppCompatActivity() {
 
     var player: Player? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_result_view)
@@ -24,19 +25,12 @@ class ResultViewActivity : AppCompatActivity() {
         var imageView = findViewById<ImageView>(R.id.imageView)
         val buttonBack = findViewById<Button>(R.id.buttonGoBack)
 
+        player = intent.getSerializableExtra("player") as Player
 
-        val listOfPlayers: ArrayList<Player>? = intent.getSerializableExtra("listOfPlayers") as? ArrayList<Player>
+        val localPlayer = player
 
-        // Kontrollera om listan är null och gör något med den om den inte är det
-        if (listOfPlayers != null) {
-            //Get Player
-            var foundPlayer = listOfPlayers.find { it.getPlayerName() == "Donatello" }
-
-            // Använd foundPlayer i stället för att ändra den globala variabeln
-            if (foundPlayer != null) {
-                player = foundPlayer
-            }
-        }
+        //Make sure it is not null
+        localPlayer?.setTries()
 
         // Exempel: Ladda en bild från res/drawable och visa den i en ImageView
         val imageResource = R.drawable.dice
@@ -69,17 +63,9 @@ class ResultViewActivity : AppCompatActivity() {
                 // Lägg till fler fall för andra tärningsvärden om så behövs
                 else -> imageView.setBackgroundResource(R.drawable.shrug)
             }
-            val localPlayer = player
+
             var guessIsCorrectTextView = findViewById<TextView>(R.id.guessIsCorrectTextView)
 
-            val updatedList = ArrayList<Player>()
-
-            if (localPlayer != null) {
-                localPlayer.setTries()
-
-
-                updatedList.add(localPlayer)
-            }
 
             if (receivedValue == valueOnDiceAfterRoll) {
 
@@ -89,7 +75,6 @@ class ResultViewActivity : AppCompatActivity() {
                 Log.d("!!!", "Yes correct guess")
 
             } else {
-                //player.setTries()
                 if (localPlayer != null) {
 
                     guessIsCorrectTextView.text = "${localPlayer.getPlayerName()}, Too bad, wrong guess, no points this time. ${localPlayer.getTries()} tries left."
@@ -98,8 +83,10 @@ class ResultViewActivity : AppCompatActivity() {
 
             //Go back/try again
             buttonBack.setOnClickListener {
+
+
                 val data = Intent()
-                data.putExtra("myListKey", ArrayList(updatedList))
+                data.putExtra("player", player)
                 setResult(Activity.RESULT_OK, data)
                 finish()
 
