@@ -10,9 +10,11 @@ import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.gif.GifDrawable
+import org.w3c.dom.Text
 
 class ResultViewActivity : AppCompatActivity() {
 
@@ -23,14 +25,14 @@ class ResultViewActivity : AppCompatActivity() {
         setContentView(R.layout.activity_result_view)
 
         var imageView = findViewById<ImageView>(R.id.imageView)
-        val buttonBack = findViewById<Button>(R.id.buttonGoBack)
+        //val buttonBack = findViewById<ImageView>(R.id.goBackImageView)
+        val resultViewHeadLine = findViewById<TextView>(R.id.resultTextView)
+        val retryImageViewButton = findViewById<ImageView>(R.id.retryImageView)
 
         player = intent.getSerializableExtra("player") as Player
 
         val localPlayer = player
 
-        //Make sure it is not null
-        localPlayer?.setTries()
 
         // Exempel: Ladda en bild från res/drawable och visa den i en ImageView
         val imageResource = R.drawable.dice
@@ -51,6 +53,7 @@ class ResultViewActivity : AppCompatActivity() {
             var valueOnDiceAfterRoll = die.getCurrentValue()
 
             var receivedValue = intent.getIntExtra("guessedDiceValue", 1)
+            var triesLeft = intent.getIntExtra("tries", 1)
 
 
             when (valueOnDiceAfterRoll) {
@@ -69,30 +72,46 @@ class ResultViewActivity : AppCompatActivity() {
 
             if (receivedValue == valueOnDiceAfterRoll) {
 
-                guessIsCorrectTextView.text = "Yeay! You guessed correct score"
+                localPlayer?.setScore()
+
+                guessIsCorrectTextView.text =
+                    "Yeay! You guessed correct! Score: ${localPlayer?.getScore()}"
                 guessIsCorrectTextView.isVisible = true
 
-                Log.d("!!!", "Yes correct guess")
-
             } else {
-                if (localPlayer != null) {
+                //Make sure it is not null
+                localPlayer?.setTries()
 
-                    guessIsCorrectTextView.text = "${localPlayer.getPlayerName()}, Too bad, wrong guess, no points this time. ${localPlayer.getTries()} tries left."
+                if (localPlayer?.getTries() == 0) {
+
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        // Kod som ska köras efter fördröjningen
+                        imageView.setImageResource(android.R.color.transparent)
+                        retryImageViewButton.setImageResource(android.R.color.transparent)
+                        resultViewHeadLine.text = "That was your last credit..."
+                        retryImageViewButton.setBackgroundResource(R.drawable.playagain)
+                        imageView.setBackgroundResource(R.drawable.gameover)
+                    }, 3000)
                 }
+
+                guessIsCorrectTextView.text =
+                    "${localPlayer?.getPlayerName()}, Too bad, wrong guess, no points this time. ${localPlayer?.getTries()} tries left."
+
             }
 
             //Go back/try again
-            buttonBack.setOnClickListener {
-
+            retryImageViewButton.setOnClickListener {
 
                 val data = Intent()
-                data.putExtra("player", player)
+                data.putExtra("player", localPlayer)
+                data.putExtra("score", localPlayer?.getScore())
+                if (localPlayer?.getTries() == 0) {
+                    data.putExtra("retry", "yes")
+                }
                 setResult(Activity.RESULT_OK, data)
                 finish()
 
-
             }
-
         }, 2000)
     }
 }
