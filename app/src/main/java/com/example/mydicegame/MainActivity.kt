@@ -5,23 +5,21 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import android.widget.ImageView
+import androidx.core.view.isVisible
 
 
 class MainActivity : AppCompatActivity() {
 
     //Create player on launch
     var player = Player("Donatello", 0, 3)
+   // lateinit var gameOverView: ImageView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
-
-        //List of consecutive guesses
-       // val listOfPlayers = ArrayList<Player>()
-
-        //listOfPlayers.add(player)
-
+        //gameOverView = findViewById<ImageView>(R.id.gameOverImageView)
+       // gameOverView.isVisible = false
 
         //Depending on choice
         val buttonOne = findViewById<Button>(R.id.buttonOne)
@@ -31,23 +29,38 @@ class MainActivity : AppCompatActivity() {
         val buttonFive = findViewById<Button>(R.id.buttonFive)
         val buttonSix = findViewById<Button>(R.id.buttonSix)
 
-        buttonOne.setOnClickListener {
-            handleButtonClick(1, player.getTries(), player)
+
+        if (player.getTries() == 0) {
+
+            //gameOverView.isVisible = true
+
+            buttonOne.isVisible = false
+            buttonTwo.isVisible = false
+            buttonThree.isVisible = false
+            buttonFour.isVisible = false
+            buttonFive.isVisible = false
+            buttonSix.isVisible = false
         }
-        buttonTwo.setOnClickListener {
-            handleButtonClick(2, player.getTries(), player)
-        }
-        buttonThree.setOnClickListener {
-            handleButtonClick(3, player.getTries(), player)
-        }
-        buttonFour.setOnClickListener{
-            handleButtonClick(4, player.getTries(), player)
-        }
-        buttonFive.setOnClickListener{
-            handleButtonClick(5, player.getTries(), player)
-        }
-        buttonSix.setOnClickListener{
-            handleButtonClick(6, player.getTries(), player)
+        else {
+
+            buttonOne.setOnClickListener {
+                handleButtonClick(1, player.getTries(), player)
+            }
+            buttonTwo.setOnClickListener {
+                handleButtonClick(2, player.getTries(), player)
+            }
+            buttonThree.setOnClickListener {
+                handleButtonClick(3, player.getTries(), player)
+            }
+            buttonFour.setOnClickListener {
+                handleButtonClick(4, player.getTries(), player)
+            }
+            buttonFive.setOnClickListener {
+                handleButtonClick(5, player.getTries(), player)
+            }
+            buttonSix.setOnClickListener {
+                handleButtonClick(6, player.getTries(), player)
+            }
         }
     }
 
@@ -55,11 +68,16 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
             player = data?.getSerializableExtra("player") as Player
+            var score = data?.getSerializableExtra("score")
+            var retry = data?.getSerializableExtra("retry")
+
+            if (retry == "yes") {
+                player.setNewTries()
+            }
         }
     }
 
     private fun handleButtonClick(guessedNumber: Int, tries: Int, player: Player) {
-
 
         //Send to next view, send dice value with
         val intent = Intent(this, ResultViewActivity::class.java)
@@ -68,14 +86,11 @@ class MainActivity : AppCompatActivity() {
 
 
         //Also send number of tries
-        if (tries == 0) {
-        }
-        else {
             intent.putExtra(
                 "tries",
                 tries
             ) // send data from dice after roll
-        }
+
         // Start next view
         startActivityForResult(intent, 1)
     }
