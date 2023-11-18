@@ -74,8 +74,7 @@ class ResultViewActivity : AppCompatActivity() {
 
                 localPlayer?.setScore()
 
-                guessIsCorrectTextView.text =
-                    "Yeay! You guessed correct! Score: ${localPlayer?.getScore()}"
+                guessIsCorrectTextView.text = "Yeay! You guessed correct! Score: ${localPlayer?.getScore()}"
                 guessIsCorrectTextView.isVisible = true
 
             } else {
@@ -84,18 +83,20 @@ class ResultViewActivity : AppCompatActivity() {
 
                 if (localPlayer?.getTries() == 0) {
 
+                    retryImageViewButton.isVisible = false
+
                     Handler(Looper.getMainLooper()).postDelayed({
                         // Kod som ska köras efter fördröjningen
                         imageView.setImageResource(android.R.color.transparent)
                         retryImageViewButton.setImageResource(android.R.color.transparent)
                         resultViewHeadLine.text = "That was your last credit..."
                         retryImageViewButton.setBackgroundResource(R.drawable.playagain)
+                        retryImageViewButton.isVisible = true
                         imageView.setBackgroundResource(R.drawable.gameover)
-                    }, 3000)
+                    }, 2000)
                 }
 
-                guessIsCorrectTextView.text =
-                    "${localPlayer?.getPlayerName()}, Too bad, wrong guess, no points this time. ${localPlayer?.getTries()} tries left."
+                guessIsCorrectTextView.text = "${localPlayer?.getPlayerName()}, Too bad, wrong guess, no points this time. ${localPlayer?.getTries()} tries left."
 
             }
 
