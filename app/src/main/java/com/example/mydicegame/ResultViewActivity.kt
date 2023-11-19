@@ -29,7 +29,10 @@ class ResultViewActivity : AppCompatActivity() {
         val resultViewHeadLine = findViewById<TextView>(R.id.resultTextView)
         val retryImageViewButton = findViewById<ImageView>(R.id.retryImageView)
 
+
         player = intent.getSerializableExtra("player") as Player
+        var receivedValue = intent.getIntExtra("guessedDiceValue", 1)
+        resultViewHeadLine.text = "Let's see if we can get a $receivedValue..."
 
         val localPlayer = player
 
@@ -52,7 +55,8 @@ class ResultViewActivity : AppCompatActivity() {
 
             var valueOnDiceAfterRoll = die.getCurrentValue()
 
-            var receivedValue = intent.getIntExtra("guessedDiceValue", 1)
+            resultViewHeadLine.text = "Result: "
+
             var triesLeft = intent.getIntExtra("tries", 1)
 
 
@@ -81,6 +85,9 @@ class ResultViewActivity : AppCompatActivity() {
                 //Make sure it is not null
                 localPlayer?.setTries()
 
+                guessIsCorrectTextView.text = "Too bad, wrong guess, no points this time. \n" +
+                        "Number of tries left: ${localPlayer?.getTries()}"
+
                 if (localPlayer?.getTries() == 0) {
 
                     retryImageViewButton.isVisible = false
@@ -93,10 +100,11 @@ class ResultViewActivity : AppCompatActivity() {
                         retryImageViewButton.setBackgroundResource(R.drawable.playagain)
                         retryImageViewButton.isVisible = true
                         imageView.setBackgroundResource(R.drawable.gameover)
+                        guessIsCorrectTextView.text = "To get 3 new credits, push the reset button below!"
                     }, 2000)
                 }
 
-                guessIsCorrectTextView.text = "${localPlayer?.getPlayerName()}, Too bad, wrong guess, no points this time. ${localPlayer?.getTries()} tries left."
+
 
             }
 
